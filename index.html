@@ -16,12 +16,17 @@ body{
   align-items:center;
   text-align:center;
   overflow:hidden;
+  transition:background 1s;
+}
+
+.glow{
+  background:radial-gradient(circle at center,#ff5fa255,#0b132b,#000);
 }
 
 .page{
   display:none;
-  background:rgba(0,0,0,.6);
-  padding:30px 20px 70px;
+  background:rgba(0,0,0,.65);
+  padding:30px 20px 90px;
   border-radius:20px;
   width:85%;
   max-width:420px;
@@ -37,7 +42,6 @@ button{
   border-radius:25px;
   font-size:16px;
   cursor:pointer;
-  transition:.3s;
 }
 
 .yes{background:#ff5fa2;color:white;}
@@ -51,7 +55,54 @@ button{
   right:0;
 }
 
-#nowPlaying{font-size:20px;margin-top:10px;}
+.album{
+  background:#111;
+  border-radius:18px;
+  padding:15px;
+  margin:15px 0;
+}
+
+.cover{
+  width:120px;
+  height:120px;
+  margin:0 auto 10px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:48px;
+  background:linear-gradient(135deg,#ff5fa2,#ffb3d9);
+}
+
+.rotate{
+  animation:spin 6s linear infinite;
+}
+
+@keyframes spin{
+  from{transform:rotate(0deg);}
+  to{transform:rotate(360deg);}
+}
+
+.progress{
+  width:100%;
+  height:6px;
+  background:#333;
+  border-radius:5px;
+  overflow:hidden;
+  margin:10px 0;
+}
+
+.bar{
+  width:0%;
+  height:100%;
+  background:#ff5fa2;
+}
+
+input[type=range]{
+  width:80%;
+}
+
+#nowPlaying{margin-top:10px;font-size:18px;}
 #name{cursor:pointer;color:#ff5fa2;}
 
 .gift{
@@ -96,23 +147,33 @@ button{
   <button class="no" onmouseover="moveNo(this)">No 🙈</button>
 </div>
 
-<!-- PAGE 3 – MUSIC -->
+<!-- PAGE 3 – ALBUM -->
 <div class="page">
-  <h1>Choose the music 🎶</h1>
+  <h1>Mini Album 💿</h1>
 
-  <p>
-    🌹 Music 1: Since One Day – Skusta Flow G<br>
-    💖 Music 2: Kailan Ka Uuwi – Juan Karlos
-  </p>
+  <div class="album">
+    <div class="cover" id="cover1">🌹</div>
+    <h3>Since One Day</h3>
+    <button class="yes" onclick="playMusic(1)">Play 🌹</button>
+  </div>
 
-  <audio id="music1"><source src="music1.mp3"></audio>
-  <audio id="music2"><source src="music2.mp3"></audio>
+  <div class="album">
+    <div class="cover" id="cover2">💖</div>
+    <h3>Kailan Ka Uuwi</h3>
+    <button class="yes" onclick="playMusic(2)">Play 💖</button>
+  </div>
 
   <div id="nowPlaying"></div>
 
+  <div class="progress"><div class="bar" id="progressBar"></div></div>
+
+  <p>Volume</p>
+  <input type="range" min="0" max="1" step="0.01" value="0.8" oninput="setVolume(this.value)">
+
+  <audio id="music1"><source src="https://v1.y2mate.nu/"></audio>
+  <audio id="music2"><source src="https://v1.y2mate.nu/"></audio>
+
   <div class="bottom">
-    <button class="yes" onclick="playMusic(1)">Play 🌹</button>
-    <button class="yes" onclick="playMusic(2)">Play 💖</button><br><br>
     <button class="yes" onclick="nextPage()">Next ✨</button>
   </div>
 </div>
@@ -121,17 +182,9 @@ button{
 <div class="page">
   <h1>Your gifts 🎁</h1>
 
-  <div class="gift" onclick="openGift(this,'💐','Happy Valentines in Advance')">
-    🎁 Gift 1 (Click to open)
-  </div>
-
-  <div class="gift" onclick="openGift(this,'🥳','Congrats satin dahil tinanggap moko bilang bf mo')">
-    🎁 Gift 2 (Click to open)
-  </div>
-
-  <div class="gift" onclick="openGift(this,'💋','Kiss kita dyan eh.')">
-    🎁 Gift 3 (Click to open)
-  </div>
+  <div class="gift" onclick="openGift(this,'💐','Happy Valentines in Advance')">🎁 Gift 1</div>
+  <div class="gift" onclick="openGift(this,'🥳','Congrats satin dahil tinanggap moko bilang bf mo')">🎁 Gift 2</div>
+  <div class="gift" onclick="openGift(this,'💋','Kiss kita dyan eh.')">🎁 Gift 3</div>
 
   <div class="bottom">
     <button id="giftNext" class="yes hidden" onclick="nextPage()">Next ✨</button>
@@ -153,7 +206,7 @@ button{
 
 <!-- PAGE 7 -->
 <div class="page">
-  <h1 id="readyText">Are you ready? 😳</h1>
+  <h1 id="readyText">Are you ready? ☺️</h1>
   <button class="yes" onclick="nextPage()">Yes 💫</button>
   <button class="no" id="teaseBtn" onclick="tease()">No 🙈</button>
 </div>
@@ -161,7 +214,6 @@ button{
 <!-- PAGE 8 – CONFESSION -->
 <div class="page">
   <h1>Hi <span id="name" onclick="revealName()">Click me ✨</span></h1>
-
   <p>
 I know it’s not Valentine’s yet—there are still 9 days to go.<br>
 Hello, good morning ☀️<br>
@@ -188,10 +240,22 @@ const realName="Shy";
 let current=0;
 const pages=document.querySelectorAll(".page");
 
+const music1=document.getElementById("music1");
+const music2=document.getElementById("music2");
+const bar=document.getElementById("progressBar");
+const cover1=document.getElementById("cover1");
+const cover2=document.getElementById("cover2");
+
 function stopAllMusic(){
-  [music1,music2].forEach(m=>{m.pause();m.currentTime=0;m.volume=0;});
-  nowPlaying.innerText="";
+  [music1,music2].forEach(m=>{
+    m.pause();m.currentTime=0;m.volume=0;
+  });
+  cover1.classList.remove("rotate");
+  cover2.classList.remove("rotate");
+  document.body.classList.remove("glow");
+  bar.style.width="0%";
 }
+
 function nextPage(){
   stopAllMusic();
   pages[current].classList.remove("active");
@@ -199,61 +263,48 @@ function nextPage(){
   pages[current]?.classList.add("active");
 }
 
-/* Page 1 */
-let size=16;
-function growYes(){size+=6;yesGrow.style.fontSize=size+"px";}
-
-/* Page 2 */
-function moveNo(btn){
-  btn.style.left=Math.random()*100-50+"px";
-  btn.style.top=Math.random()*50-25+"px";
-}
-
-/* Music */
+/* MUSIC */
 let currentMusic=null;
 function playMusic(n){
-  const t=n===1?music1:music2;
-  const o=n===1?music2:music1;
-  o.pause();o.currentTime=0;
-  t.volume=0;
-  t.play().then(()=>{
-    currentMusic=t;
-    nowPlaying.innerText=n===1?"🌹 Playing Music 1":"💖 Playing Music 2";
-    fadeIn(t);
-  });
-}
-function fadeIn(a){
-  let v=0;const f=setInterval(()=>{
-    if(v<0.8){v+=0.05;a.volume=v;}else clearInterval(f);
-  },100);
+  stopAllMusic();
+  const m=n===1?music1:music2;
+  const cover=n===1?cover1:cover2;
+
+  m.volume=0.8;
+  m.play();
+  currentMusic=m;
+  cover.classList.add("rotate");
+  document.body.classList.add("glow");
+
+  m.ontimeupdate=()=>{
+    bar.style.width=(m.currentTime/m.duration)*100+"%";
+  };
 }
 
-/* Gifts */
-let opened=0;
-function openGift(el,emoji,text){
-  if(el.dataset.opened)return;
-  el.dataset.opened=true;
-  el.innerHTML=`<h2>${emoji}</h2><p>${text}</p>`;
-  opened++;
-  if(opened===3)giftNext.classList.remove("hidden");
+function setVolume(v){
+  if(currentMusic) currentMusic.volume=v;
 }
 
-/* Tease */
-let teaseCount=0;
-function tease(){
-  const t=readyText;
-  teaseCount++;
-  if(teaseCount===1)t.innerText="😭";
-  else if(teaseCount===2)t.innerText="🥹";
-  else if(teaseCount===3)t.innerText="Sapilitan nato ayaw mo talaga 🙄";
-  else document.getElementById("teaseBtn").style.display="none";
-}
-
-/* Name */
+/* OTHER */
+let size=16;
+function growYes(){size+=6;yesGrow.style.fontSize=size+"px";}
+function moveNo(b){b.style.left=Math.random()*100-50+"px";}
 function revealName(){name.innerText=realName;}
 
-/* Stars */
-for(let i=0;i<70;i++){
+const questions=[
+"Are you ready? ☺️","Are you sure? 😭","Bakit ka ba nag no-no? 🤧",
+"Ayaw mo talaga sakin? 🙈","Kapalit-palit ba ako? 🫠",
+"Luh! ayaw niya talaga oh 🥹","Sapilitan na to boi 🙄!"
+];
+let q=0;
+function tease(){
+  q++;
+  if(q<questions.length) readyText.innerText=questions[q];
+  else teaseBtn.style.display="none";
+}
+
+/* STARS */
+for(let i=0;i<60;i++){
   const s=document.createElement("div");
   s.className="star";
   s.style.width=s.style.height=Math.random()*2+"px";
@@ -264,4 +315,5 @@ for(let i=0;i<70;i++){
 </script>
 
 </body>
-</html>
+  </html>
+  
