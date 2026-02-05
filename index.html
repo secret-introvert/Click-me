@@ -18,11 +18,11 @@ body{
   overflow:hidden;
   transition:background 1s;
 }
-
 .glow{
-  background:radial-gradient(circle at center,#ff5fa255,#0b132b,#000);
+  background:
+  radial-gradient(circle at center,#ff5fa255,#0b132b,#000),
+  radial-gradient(circle at bottom,#0b132b,#000);
 }
-
 .page{
   display:none;
   background:rgba(0,0,0,.65);
@@ -30,8 +30,6 @@ body{
   border-radius:20px;
   width:85%;
   max-width:420px;
-  position:relative;
-  animation:fade 1s ease;
 }
 .page.active{display:block;}
 
@@ -43,91 +41,34 @@ button{
   font-size:16px;
   cursor:pointer;
 }
-
 .yes{background:#ff5fa2;color:white;}
-.no{background:#555;color:white;position:relative;}
-.hidden{display:none;}
+.no{background:#555;color:white;}
 
-.bottom{
-  position:absolute;
-  bottom:15px;
-  left:0;
-  right:0;
-}
-
-.album{
-  background:#111;
-  border-radius:18px;
+.album,.gift{
+  background:#222;
   padding:15px;
-  margin:15px 0;
+  border-radius:15px;
+  margin:10px 0;
 }
 
 .cover{
-  width:120px;
-  height:120px;
-  margin:0 auto 10px;
+  width:120px;height:120px;
   border-radius:50%;
   display:flex;
   align-items:center;
   justify-content:center;
   font-size:48px;
   background:linear-gradient(135deg,#ff5fa2,#ffb3d9);
+  margin:0 auto;
 }
+.rotate{animation:spin 6s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-.rotate{
-  animation:spin 6s linear infinite;
-}
+.progress{height:6px;background:#333;border-radius:5px;overflow:hidden;}
+.bar{height:100%;width:0%;background:#ff5fa2}
 
-@keyframes spin{
-  from{transform:rotate(0deg);}
-  to{transform:rotate(360deg);}
-}
-
-.progress{
-  width:100%;
-  height:6px;
-  background:#333;
-  border-radius:5px;
-  overflow:hidden;
-  margin:10px 0;
-}
-
-.bar{
-  width:0%;
-  height:100%;
-  background:#ff5fa2;
-}
-
-input[type=range]{
-  width:80%;
-}
-
-#nowPlaying{margin-top:10px;font-size:18px;}
-#name{cursor:pointer;color:#ff5fa2;}
-
-.gift{
-  background:#222;
-  border-radius:15px;
-  padding:15px;
-  margin:10px;
-  cursor:pointer;
-}
-
-@keyframes fade{
-  from{opacity:0;transform:translateY(20px);}
-  to{opacity:1;transform:translateY(0);}
-}
-
-.star{
-  position:absolute;
-  background:white;
-  border-radius:50%;
-  animation:twinkle 2s infinite alternate;
-}
-@keyframes twinkle{
-  from{opacity:.3;}
-  to{opacity:1;}
-}
+.bottom{position:absolute;bottom:15px;left:0;right:0}
+.hidden{display:none}
 </style>
 </head>
 
@@ -135,87 +76,82 @@ input[type=range]{
 
 <!-- PAGE 1 -->
 <div class="page active">
-  <h1>Be my Valentine? 💘</h1>
-  <button class="yes" id="yesGrow" onclick="nextPage()">Yes 💕</button>
-  <button class="no" onclick="growYes()">No 😅</button>
+<h1>Be my Valentine? 💘</h1>
+<button class="yes" id="yesGrow" onclick="nextPage()">Yes 💕</button>
+<button class="no" onclick="growYes()">No 😅</button>
 </div>
 
 <!-- PAGE 2 -->
 <div class="page">
-  <h1>Do you want some music? 🎶</h1>
-  <button class="yes" onclick="nextPage()">Yes 🎧</button>
-  <button class="no" onmouseover="moveNo(this)">No 🙈</button>
+<h1>Do you want music? 🎶</h1>
+<button class="yes" onclick="nextPage()">Yes 🎧</button>
+<button class="no" onmouseover="this.style.transform='translateX(50px)'">No 🙈</button>
 </div>
 
-<!-- PAGE 3 – ALBUM -->
+<!-- PAGE 3 MUSIC -->
 <div class="page">
-  <h1>Mini Album 💿</h1>
+<h1>Mini Album 💿</h1>
 
-  <div class="album">
-    <div class="cover" id="cover1">🌹</div>
-    <h3>Since One Day</h3>
-    <button class="yes" onclick="playMusic(1)">Play 🌹</button>
-  </div>
-
-  <div class="album">
-    <div class="cover" id="cover2">💖</div>
-    <h3>Kailan Ka Uuwi</h3>
-    <button class="yes" onclick="playMusic(2)">Play 💖</button>
-  </div>
-
-  <div id="nowPlaying"></div>
-
-  <div class="progress"><div class="bar" id="progressBar"></div></div>
-
-  <p>Volume</p>
-  <input type="range" min="0" max="1" step="0.01" value="0.8" oninput="setVolume(this.value)">
-
-  <audio id="music1"><source src="https://v1.y2mate.nu/"></audio>
-  <audio id="music2"><source src="https://v1.y2mate.nu/"></audio>
-
-  <div class="bottom">
-    <button class="yes" onclick="nextPage()">Next ✨</button>
-  </div>
+<div class="album">
+<div class="cover" id="cover1">🌹</div>
+<h3>Since One Day</h3>
+<button class="yes" onclick="playMusic(1)">Play 🌹</button>
 </div>
 
-<!-- PAGE 4 – GIFTS -->
+<div class="album">
+<div class="cover" id="cover2">💖</div>
+<h3>Kailan Ka Uuwi</h3>
+<button class="yes" onclick="playMusic(2)">Play 💖</button>
+</div>
+
+<div class="progress"><div class="bar" id="bar"></div></div>
+<input type="range" min="0" max="1" step="0.01" value="0.8" oninput="setVolume(this.value)">
+
+<audio id="m1" src="music1.mp3"></audio>
+<audio id="m2" src="music2.mp3"></audio>
+
+<div class="bottom">
+<button class="yes" onclick="nextPage()">Next ✨</button>
+</div>
+</div>
+
+<!-- PAGE 4 GIFTS -->
 <div class="page">
-  <h1>Your gifts 🎁</h1>
+<h1>Your Gifts 🎁</h1>
 
-  <div class="gift" onclick="openGift(this,'💐','Happy Valentines in Advance')">🎁 Gift 1</div>
-  <div class="gift" onclick="openGift(this,'🥳','Congrats satin dahil tinanggap moko bilang bf mo')">🎁 Gift 2</div>
-  <div class="gift" onclick="openGift(this,'💋','Kiss kita dyan eh.')">🎁 Gift 3</div>
+<div class="gift" onclick="openGift(this,'💐','Happy Valentines in Advance')">🎁 Gift</div>
+<div class="gift" onclick="openGift(this,'🥳','Congrats satin dahil tinanggap moko bilang bf mo')">🎁 Gift</div>
+<div class="gift" onclick="openGift(this,'💋','Kiss kita dyan eh.')">🎁 Gift</div>
 
-  <div class="bottom">
-    <button id="giftNext" class="yes hidden" onclick="nextPage()">Next ✨</button>
-  </div>
+<div class="bottom">
+<button id="giftNext" class="yes hidden" onclick="nextPage()">Next ✨</button>
+</div>
 </div>
 
 <!-- PAGE 5 -->
 <div class="page">
-  <h1>Still here? 😳</h1>
-  <button class="yes" onclick="nextPage()">Yes 💓</button>
-  <button class="no" onclick="this.innerText='Yes 😅';this.className='yes';this.onclick=nextPage;">No 🤔</button>
+<h1>Still here? 😳</h1>
+<button class="yes" onclick="nextPage()">Yes 💓</button>
 </div>
 
 <!-- PAGE 6 -->
 <div class="page">
-  <h1>Careful… this is getting sweet 🍯</h1>
-  <button class="yes" onclick="nextPage()">Yes 😌</button>
+<h1>Countdown ⏳</h1>
+<h2 id="count">5</h2>
 </div>
 
 <!-- PAGE 7 -->
 <div class="page">
-  <h1 id="readyText">Are you ready? ☺️</h1>
-  <button class="yes" onclick="nextPage()">Yes 💫</button>
-  <button class="no" id="teaseBtn" onclick="tease()">No 🙈</button>
+<h1 id="q">Are you ready? ☺️</h1>
+<button class="yes" onclick="nextPage()">Yes 💫</button>
+<button class="no" id="noBtn" onclick="tease()">No 🙈</button>
 </div>
 
-<!-- PAGE 8 – CONFESSION -->
+<!-- PAGE 8 -->
 <div class="page">
-  <h1>Hi <span id="name" onclick="revealName()">Click me ✨</span></h1>
-  <p>
-I know it’s not Valentine’s yet—there are still 9 days to go.<br>
+<h1>Hello Shy 💖</h1>
+<p>
+I know it’s not Valentine’s yet—there are still 9 days to go.<br><br>
 Hello, good morning ☀️<br>
 Kamusta ka?<br><br>
 
@@ -232,86 +168,76 @@ May sasabihin ako sayo…<br>
 Miss ko yung sinasabi mo sakin yung talambuhay mo.<br><br>
 
 Thank you for reading hanggang dulo ✨
-  </p>
+</p>
 </div>
 
 <script>
-const realName="Shy";
 let current=0;
 const pages=document.querySelectorAll(".page");
+const m1=document.getElementById("m1");
+const m2=document.getElementById("m2");
+const bar=document.getElementById("bar");
+let currentMusic=null;
 
-const music1=document.getElementById("music1");
-const music2=document.getElementById("music2");
-const bar=document.getElementById("progressBar");
-const cover1=document.getElementById("cover1");
-const cover2=document.getElementById("cover2");
-
-function stopAllMusic(){
-  [music1,music2].forEach(m=>{
-    m.pause();m.currentTime=0;m.volume=0;
-  });
-  cover1.classList.remove("rotate");
-  cover2.classList.remove("rotate");
-  document.body.classList.remove("glow");
-  bar.style.width="0%";
+function stopMusic(){
+[m1,m2].forEach(m=>{m.pause();m.currentTime=0});
+document.body.classList.remove("glow");
+bar.style.width="0%";
+document.getElementById("cover1").classList.remove("rotate");
+document.getElementById("cover2").classList.remove("rotate");
 }
 
 function nextPage(){
-  stopAllMusic();
-  pages[current].classList.remove("active");
-  current++;
-  pages[current]?.classList.add("active");
+stopMusic();
+pages[current].classList.remove("active");
+current++;
+pages[current].classList.add("active");
 }
 
-/* MUSIC */
-let currentMusic=null;
 function playMusic(n){
-  stopAllMusic();
-  const m=n===1?music1:music2;
-  const cover=n===1?cover1:cover2;
-
-  m.volume=0.8;
-  m.play();
-  currentMusic=m;
-  cover.classList.add("rotate");
-  document.body.classList.add("glow");
-
-  m.ontimeupdate=()=>{
-    bar.style.width=(m.currentTime/m.duration)*100+"%";
-  };
+stopMusic();
+const m=n===1?m1:m2;
+const cover=n===1?cover1:cover2;
+currentMusic=m;
+m.volume=0.8;
+m.play();
+cover.classList.add("rotate");
+document.body.classList.add("glow");
+m.ontimeupdate=()=>bar.style.width=(m.currentTime/m.duration*100)+"%";
 }
 
-function setVolume(v){
-  if(currentMusic) currentMusic.volume=v;
+function setVolume(v){ if(currentMusic) currentMusic.volume=v }
+
+let opened=0;
+function openGift(el,emoji,text){
+if(el.dataset.opened)return;
+el.dataset.opened=true;
+el.innerHTML=`<h2>${emoji}</h2><p>${text}</p>`;
+opened++;
+if(opened===3) giftNext.classList.remove("hidden");
 }
 
-/* OTHER */
 let size=16;
-function growYes(){size+=6;yesGrow.style.fontSize=size+"px";}
-function moveNo(b){b.style.left=Math.random()*100-50+"px";}
-function revealName(){name.innerText=realName;}
+function growYes(){yesGrow.style.fontSize=(size+=6)+"px";}
 
-const questions=[
+let qs=[
 "Are you ready? ☺️","Are you sure? 😭","Bakit ka ba nag no-no? 🤧",
 "Ayaw mo talaga sakin? 🙈","Kapalit-palit ba ako? 🫠",
 "Luh! ayaw niya talaga oh 🥹","Sapilitan na to boi 🙄!"
 ];
-let q=0;
+let qi=0;
 function tease(){
-  q++;
-  if(q<questions.length) readyText.innerText=questions[q];
-  else teaseBtn.style.display="none";
+qi++;
+if(qi<qs.length) q.innerText=qs[qi];
+else noBtn.style.display="none";
 }
 
-/* STARS */
-for(let i=0;i<60;i++){
-  const s=document.createElement("div");
-  s.className="star";
-  s.style.width=s.style.height=Math.random()*2+"px";
-  s.style.top=Math.random()*innerHeight+"px";
-  s.style.left=Math.random()*innerWidth+"px";
-  document.body.appendChild(s);
-}
+let c=5;
+setInterval(()=>{
+if(pages[5].classList.contains("active")&&c>0){
+document.getElementById("count").innerText=--c;
+if(c===0) nextPage();
+}},1000);
 </script>
 
 </body>
