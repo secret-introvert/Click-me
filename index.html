@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Click me ✨</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  background:radial-gradient(circle at bottom,#0b132b,#000);
+  font-family:Arial,sans-serif;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  overflow:hidden;
+}
+
+.page{
+  display:none;
+  background:rgba(0,0,0,.6);
+  padding:30px 20px 70px;
+  border-radius:20px;
+  width:85%;
+  max-width:420px;
+  position:relative;
+  animation:fade 1s ease;
+}
+.page.active{display:block;}
+
+button{
+  padding:12px 24px;
+  margin:10px;
+  border:none;
+  border-radius:25px;
+  font-size:16px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.yes{background:#ff5fa2;color:white;}
+.no{background:#555;color:white;position:relative;}
+.hidden{display:none;}
+
+.bottom{
+  position:absolute;
+  bottom:15px;
+  left:0;
+  right:0;
+}
+
+#nowPlaying{font-size:20px;margin-top:10px;}
+#name{cursor:pointer;color:#ff5fa2;}
+
+.gift{
+  background:#222;
+  border-radius:15px;
+  padding:15px;
+  margin:10px;
+  cursor:pointer;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.star{
+  position:absolute;
+  background:white;
+  border-radius:50%;
+  animation:twinkle 2s infinite alternate;
+}
+@keyframes twinkle{
+  from{opacity:.3;}
+  to{opacity:1;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- PAGE 1 -->
+<div class="page active">
+  <h1>Be my Valentine? 💘</h1>
+  <button class="yes" id="yesGrow" onclick="nextPage()">Yes 💕</button>
+  <button class="no" onclick="growYes()">No 😅</button>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page">
+  <h1>Do you want some music? 🎶</h1>
+  <button class="yes" onclick="nextPage()">Yes 🎧</button>
+  <button class="no" onmouseover="moveNo(this)">No 🙈</button>
+</div>
+
+<!-- PAGE 3 – MUSIC -->
+<div class="page">
+  <h1>Choose the music 🎶</h1>
+
+  <p>
+    🌹 Music 1: Since One Day – Skusta Flow G<br>
+    💖 Music 2: Kailan Ka Uuwi – Juan Karlos
+  </p>
+
+  <audio id="music1"><source src="music1.mp3"></audio>
+  <audio id="music2"><source src="music2.mp3"></audio>
+
+  <div id="nowPlaying"></div>
+
+  <div class="bottom">
+    <button class="yes" onclick="playMusic(1)">Play 🌹</button>
+    <button class="yes" onclick="playMusic(2)">Play 💖</button><br><br>
+    <button class="yes" onclick="nextPage()">Next ✨</button>
+  </div>
+</div>
+
+<!-- PAGE 4 – GIFTS -->
+<div class="page">
+  <h1>Your gifts 🎁</h1>
+
+  <div class="gift" onclick="openGift(this,'💐','Happy Valentines in Advance')">
+    🎁 Gift 1 (Click to open)
+  </div>
+
+  <div class="gift" onclick="openGift(this,'🥳','Congrats satin dahil tinanggap moko bilang bf mo')">
+    🎁 Gift 2 (Click to open)
+  </div>
+
+  <div class="gift" onclick="openGift(this,'💋','Kiss kita dyan eh.')">
+    🎁 Gift 3 (Click to open)
+  </div>
+
+  <div class="bottom">
+    <button id="giftNext" class="yes hidden" onclick="nextPage()">Next ✨</button>
+  </div>
+</div>
+
+<!-- PAGE 5 -->
+<div class="page">
+  <h1>Still here? 😳</h1>
+  <button class="yes" onclick="nextPage()">Yes 💓</button>
+  <button class="no" onclick="this.innerText='Yes 😅';this.className='yes';this.onclick=nextPage;">No 🤔</button>
+</div>
+
+<!-- PAGE 6 -->
+<div class="page">
+  <h1>Careful… this is getting sweet 🍯</h1>
+  <button class="yes" onclick="nextPage()">Yes 😌</button>
+</div>
+
+<!-- PAGE 7 -->
+<div class="page">
+  <h1 id="readyText">Are you ready? 😳</h1>
+  <button class="yes" onclick="nextPage()">Yes 💫</button>
+  <button class="no" id="teaseBtn" onclick="tease()">No 🙈</button>
+</div>
+
+<!-- PAGE 8 – CONFESSION -->
+<div class="page">
+  <h1>Hi <span id="name" onclick="revealName()">Click me ✨</span></h1>
+
+  <p>
+I know it’s not Valentine’s yet—there are still 9 days to go.<br>
+Hello, good morning ☀️<br>
+Kamusta ka?<br><br>
+
+Explain mo muna bakit moko ghinost.<br>
+kidding 😅 wala lang naisip ko lang.<br><br>
+
+Saan ako nagkulang?<br>
+Char, naghahanap kapa ng iba nandito naman ako HAHA.<br><br>
+
+Sana kahit saglit,<br>
+napangiti ko umaga mo ngayon.<br><br>
+
+May sasabihin ako sayo…<br>
+Miss ko yung sinasabi mo sakin yung talambuhay mo.<br><br>
+
+Thank you for reading hanggang dulo ✨
+  </p>
+</div>
+
+<script>
+const realName="Shy";
+let current=0;
+const pages=document.querySelectorAll(".page");
+
+function stopAllMusic(){
+  [music1,music2].forEach(m=>{m.pause();m.currentTime=0;m.volume=0;});
+  nowPlaying.innerText="";
+}
+function nextPage(){
+  stopAllMusic();
+  pages[current].classList.remove("active");
+  current++;
+  pages[current]?.classList.add("active");
+}
+
+/* Page 1 */
+let size=16;
+function growYes(){size+=6;yesGrow.style.fontSize=size+"px";}
+
+/* Page 2 */
+function moveNo(btn){
+  btn.style.left=Math.random()*100-50+"px";
+  btn.style.top=Math.random()*50-25+"px";
+}
+
+/* Music */
+let currentMusic=null;
+function playMusic(n){
+  const t=n===1?music1:music2;
+  const o=n===1?music2:music1;
+  o.pause();o.currentTime=0;
+  t.volume=0;
+  t.play().then(()=>{
+    currentMusic=t;
+    nowPlaying.innerText=n===1?"🌹 Playing Music 1":"💖 Playing Music 2";
+    fadeIn(t);
+  });
+}
+function fadeIn(a){
+  let v=0;const f=setInterval(()=>{
+    if(v<0.8){v+=0.05;a.volume=v;}else clearInterval(f);
+  },100);
+}
+
+/* Gifts */
+let opened=0;
+function openGift(el,emoji,text){
+  if(el.dataset.opened)return;
+  el.dataset.opened=true;
+  el.innerHTML=`<h2>${emoji}</h2><p>${text}</p>`;
+  opened++;
+  if(opened===3)giftNext.classList.remove("hidden");
+}
+
+/* Tease */
+let teaseCount=0;
+function tease(){
+  const t=readyText;
+  teaseCount++;
+  if(teaseCount===1)t.innerText="😭";
+  else if(teaseCount===2)t.innerText="🥹";
+  else if(teaseCount===3)t.innerText="Sapilitan nato ayaw mo talaga 🙄";
+  else document.getElementById("teaseBtn").style.display="none";
+}
+
+/* Name */
+function revealName(){name.innerText=realName;}
+
+/* Stars */
+for(let i=0;i<70;i++){
+  const s=document.createElement("div");
+  s.className="star";
+  s.style.width=s.style.height=Math.random()*2+"px";
+  s.style.top=Math.random()*innerHeight+"px";
+  s.style.left=Math.random()*innerWidth+"px";
+  document.body.appendChild(s);
+}
+</script>
+
+</body>
+</html>
