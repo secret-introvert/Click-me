@@ -208,13 +208,21 @@ m.ontimeupdate=()=>bar.style.width=(m.currentTime/m.duration*100)+"%";
 
 function setVolume(v){ if(currentMusic) currentMusic.volume=v }
 
-let opened=0;
-function openGift(el,emoji,text){
-if(el.dataset.opened)return;
-el.dataset.opened=true;
-el.innerHTML=`<h2>${emoji}</h2><p>${text}</p>`;
-opened++;
-if(opened===3) giftNext.classList.remove("hidden");
+let openedGifts = 0;
+const totalGifts = 3;
+const giftNext = document.getElementById("giftNext");
+
+function openGift(el, emoji, text){
+  if(el.dataset.opened === "true") return;
+
+  el.dataset.opened = "true";
+  el.innerHTML = `<h2>${emoji}</h2><p>${text}</p>`;
+  el.style.cursor = "default";
+  openedGifts++;
+
+  if(openedGifts === totalGifts){
+    giftNext.classList.remove("hidden");
+  }
 }
 
 let size=16;
